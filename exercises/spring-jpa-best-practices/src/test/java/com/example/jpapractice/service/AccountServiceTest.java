@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -68,6 +69,15 @@ public class AccountServiceTest {
         // given
         final AccountDto.SignUpReq signUpReq = buildSignUpReq();
         final AccountDto.MyAccountReq dto = buildMyAccountReq();
+        given(accountRepository.getOne(anyLong())).willReturn(signUpReq.toEntity());
+
+        // when
+        final Account account = accountService.updateMyAccount(anyLong(), dto);
+
+        // then
+        assertThat(dto.getAddress1(), is(account.getAddress1()));
+        assertThat(dto.getAddress2(), is(account.getAddress2()));
+        assertThat(dto.getZip(), is(account.getZip()));
     }
 
     private AccountDto.MyAccountReq buildMyAccountReq() {
@@ -79,6 +89,13 @@ public class AccountServiceTest {
     }
 
     private void assertThatEqual(AccountDto.SignUpReq dto, Account account) {
+        assertThat(dto.getAddress1(), is(account.getAddress1()));
+        assertThat(dto.getAddress2(), is(account.getAddress2()));
+        assertThat(dto.getZip(), is(account.getZip()));
+        assertThat(dto.getEmail(), is(account.getEmail()));
+        assertThat(dto.getFirstName(), is(account.getFirstName()));
+        assertThat(dto.getLastName(), is(account.getLastName()));
+        assertThat(dto.getPassword(), is(account.getPassword()));
     }
 
     private AccountDto.SignUpReq buildSignUpReq() {
