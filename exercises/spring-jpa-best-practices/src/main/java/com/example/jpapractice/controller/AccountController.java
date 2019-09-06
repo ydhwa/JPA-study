@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("accounts")
 public class AccountController {
@@ -15,7 +17,7 @@ public class AccountController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public AccountDto.Res signUp(@RequestBody final AccountDto.SignUpReq dto) {
+    public AccountDto.Res signUp(@RequestBody @Valid final AccountDto.SignUpReq dto) {
         return new AccountDto.Res(accountService.create(dto));
     }
 

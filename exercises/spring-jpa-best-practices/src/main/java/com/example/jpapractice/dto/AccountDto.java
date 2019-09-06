@@ -5,6 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.implementation.bind.annotation.Empty;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * DTO 클래스의 필요 이유
@@ -22,12 +26,19 @@ public class AccountDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SignUpReq {
+        @Email
         private String email;
+        @NotEmpty
         private String firstName;
+        @NotEmpty
         private String lastName;
+        @NotEmpty
         private String password;
+        @NotEmpty
         private String address1;
+        @NotEmpty
         private String address2;
+        @NotEmpty
         private String zip;
 
         @Builder

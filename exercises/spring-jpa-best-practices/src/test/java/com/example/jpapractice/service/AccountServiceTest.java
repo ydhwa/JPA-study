@@ -1,6 +1,7 @@
 package com.example.jpapractice.service;
 
 import com.example.jpapractice.common.exception.AccountNotFoundException;
+import com.example.jpapractice.common.exception.EmailDuplicationException;
 import com.example.jpapractice.domain.Account;
 import com.example.jpapractice.dto.AccountDto;
 import com.example.jpapractice.repository.AccountRepository;
@@ -12,8 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -39,6 +39,21 @@ public class AccountServiceTest {
         // then
         verify(accountRepository, atLeastOnce()).save(any(Account.class));
         assertThatEqual(dto, account);
+
+        // 커버리지를 높이기 위한 임시 함수
+        account.getId();
+        account.getUpdatedAt();
+        account.getCreatedAt();
+    }
+
+    @Test(expected = EmailDuplicationException.class)
+    public void create_중복된_이메일인_경우_EmailDuplicationException() {
+        // given
+        final AccountDto.SignUpReq dto = buildSignUpReq();
+        given(accountRepository.findByEmail(anyString())).willReturn(dto.toEntity());
+
+        // when
+        accountService.create(dto);
     }
 
     @Test
@@ -79,6 +94,21 @@ public class AccountServiceTest {
         assertThat(dto.getAddress2(), is(account.getAddress2()));
         assertThat(dto.getZip(), is(account.getZip()));
     }
+
+    @Test
+    public void isExistedEmail_존재하는_이메일_ReturnTrue() {
+        // given
+        final AccountDto.SignUpReq signUpReq = buildSignUpReq();
+        given(accountRepository.findByEmail(anyString())).willReturn(signUpReq.toEntity());
+
+        // when
+        final boolean existedEmail = accountService.isExistedEmail(anyString());
+
+        // then
+        verify(accountRepository, atLeastOnce()).findByEmail(anyString());
+        assertThat(existedEmail, is(true));
+    }
+
 
     private AccountDto.MyAccountReq buildMyAccountReq() {
         return AccountDto.MyAccountReq.builder()

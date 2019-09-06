@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Date;
 
 @Entity
@@ -19,6 +20,7 @@ public class Account {
     @GeneratedValue
     private long id;
 
+    @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -42,7 +44,11 @@ public class Account {
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createAt;
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     @Builder
     public Account(String email, String firstName, String lastName, String password, String address1, String address2, String zip) {
@@ -60,5 +66,4 @@ public class Account {
         this.address2 = dto.getAddress2();
         this.zip = dto.getZip();
     }
-
 }
